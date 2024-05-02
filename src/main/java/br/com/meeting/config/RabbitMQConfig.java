@@ -1,0 +1,53 @@
+package br.com.meeting.config;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class RabbitMQConfig {
+
+    @Bean
+    public RabbitAdmin topicRabbitAdmin(CachingConnectionFactory connectionFactory) {
+
+        RabbitAdmin admin = new RabbitAdmin(connectionFactory);
+        DirectExchange exchange = new DirectExchange("direct-exchange");
+
+        admin.declareExchange(exchange);
+
+        Queue notificationQueue = new Queue("notification-queue");
+        Binding notificationBinding = BindingBuilder.bind(notificationQueue).to(exchange).withQueueName();
+
+        admin.declareQueue(notificationQueue);
+        admin.declareBinding(notificationBinding);
+
+        return admin;
+    }
+
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        return rabbitTemplate;
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+}
