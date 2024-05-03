@@ -6,7 +6,6 @@ import br.com.meeting.model.Reuniao;
 import br.com.meeting.model.Usuario;
 import br.com.meeting.model.UsuarioReuniao;
 import br.com.meeting.repository.ReuniaoRepository;
-import br.com.meeting.repository.UsuarioReuniaoRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
