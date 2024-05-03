@@ -17,15 +17,18 @@ public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ID")
+    @Column(name = "id_user")
     private Long id;
 
-    @Column(name = "NAME", length = 60, nullable = false)
+    @Column(name = "name", length = 60, nullable = false)
     private String name;
 
-    @Column(name = "EMAIL", length = 60, unique = true, nullable = false)
+    @Column(name = "email", length = 60, unique = true, nullable = false)
     private String email;
 
-    @Column(name = "PHONE", length = 15, nullable = false)
+    @Column(name = "phone", length = 15, nullable = false)
     private String phone;
+
+    @Column(name = "password", length = 10, nullable = false)
+    private String password;
 }

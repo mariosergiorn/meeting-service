@@ -17,7 +17,7 @@ public class UsuarioService {
 
     private final ModelMapper modelMapper;
 
-    public UsuarioService (UsuarioRepository userRepository, ModelMapper modelMapper) {
+    public UsuarioService(UsuarioRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
     }
