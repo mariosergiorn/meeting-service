@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UsuarioController {
 
     private final UsuarioService service;
@@ -29,9 +29,9 @@ public class UsuarioController {
         return service.saveUser(userRequest);
     }
 
-    @GetMapping(value = "/name/{name}")
-    public ResponseEntity<Usuario> getByName(@PathVariable String name) {
-        return ResponseEntity.ok(service.getUserByName(name));
+    @GetMapping(value = "/email/{email}")
+    public ResponseEntity<Usuario> getByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(service.getUserByEmail(email));
     }
 
     @GetMapping(value = "/id/{userId}")

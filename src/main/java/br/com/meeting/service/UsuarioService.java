@@ -3,7 +3,9 @@ package br.com.meeting.service;
 import br.com.meeting.dto.UsuarioDto;
 import br.com.meeting.model.Usuario;
 import br.com.meeting.repository.UsuarioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,7 @@ public class UsuarioService {
         this.modelMapper = modelMapper;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Throwable.class)
     public UsuarioDto saveUser(UsuarioDto usuarioDto) {
         Usuario usuario = modelMapper.map(usuarioDto, Usuario.class);
         userRepository.save(usuario);
@@ -30,8 +32,8 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public Usuario getUserByName(String name) {
-        return userRepository.findByName(name);
+    public Usuario getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Transactional(readOnly = true)
@@ -49,12 +51,10 @@ public class UsuarioService {
         Optional<Usuario> existingUserOptional = userRepository.findById(userId);
         if (existingUserOptional.isPresent()) {
             Usuario existingUser = existingUserOptional.get();
-            existingUser.setName(newUser.getName());
-            existingUser.setEmail(newUser.getEmail());
-            existingUser.setPhone(newUser.getPhone());
+            BeanUtils.copyProperties(newUser, existingUser);
             return userRepository.save(existingUser);
         } else {
-            return null;
+            throw new EntityNotFoundException("Usuário Não Encontrado");
         }
     }
 

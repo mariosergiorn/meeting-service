@@ -30,7 +30,7 @@ public class Reuniao {
     @Column(name = "description", length = 50, nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "reuniao")
-    private List<Participante> participants;
+    @OneToMany(mappedBy = "meeting")
+    private List<UsuarioReuniao> participants;
 
 }
