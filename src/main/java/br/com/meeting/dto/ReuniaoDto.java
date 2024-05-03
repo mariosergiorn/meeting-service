@@ -1,6 +1,5 @@
 package br.com.meeting.dto;
 
-import br.com.meeting.model.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class ReuniaoDto {
+
+    private Long id;
 
     private String title;
 

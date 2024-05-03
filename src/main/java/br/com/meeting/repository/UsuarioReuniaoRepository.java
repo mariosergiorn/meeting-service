@@ -11,4 +11,6 @@ public interface UsuarioReuniaoRepository extends JpaRepository<UsuarioReuniao, 
 
     List<UsuarioReuniao> findAllByMeetingId(Long id);
 
+    List<UsuarioReuniao> findAllByUserId(Long id);
+
 }

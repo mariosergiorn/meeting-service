@@ -20,4 +20,8 @@ public class UsuarioReuniaoService {
     public List<UsuarioReuniao> getUsersByMeetingId(Long idMeeting) {
         return repository.findAllByMeetingId(idMeeting);
     }
+
+    public List<UsuarioReuniao> getMeetingsByUserId(Long idUser) {
+        return repository.findAllByUserId(idUser);
+    }
 }

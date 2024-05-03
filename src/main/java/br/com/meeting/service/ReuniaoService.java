@@ -41,7 +41,7 @@ public class ReuniaoService {
         return convertToDTO(reuniao);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Usuario> getUsersByMeetingId(Long idMeeting) {
         List<UsuarioReuniao> usuarioReuniao = usuarioReuniaoService.getUsersByMeetingId(idMeeting);
         List<Usuario> usuarios = new ArrayList<>();
@@ -49,6 +49,17 @@ public class ReuniaoService {
             usuarios.add(usuario.getUser());
         }
         return usuarios;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Reuniao> getMeetingsByUserId(Long idUser) {
+        List<UsuarioReuniao> usuarioReuniao = usuarioReuniaoService.getMeetingsByUserId(idUser);
+        List<Reuniao> meetings = new ArrayList<>();
+        for (UsuarioReuniao usuario : usuarioReuniao) {
+            usuario.getMeeting().setParticipants(null);
+            meetings.add(usuario.getMeeting());
+        }
+        return meetings;
     }
 
     @Transactional(readOnly = true)
@@ -78,6 +89,7 @@ public class ReuniaoService {
         }
     }
 
+    @Transactional
     public boolean deleteMeeting(Long meetingId) {
         if (repository.existsById(meetingId)) {
             repository.deleteById(meetingId);

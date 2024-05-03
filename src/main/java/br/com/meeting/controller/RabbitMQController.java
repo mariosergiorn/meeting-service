@@ -1,7 +1,9 @@
 package br.com.meeting.controller;
 
+import br.com.meeting.model.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/publish")
 public class RabbitMQController {
 
+    @Value("${meeting.queue.notification}")
+    private String queue;
+
+    @Value("${meeting.exchange.direct}")
+    private String exchange;
+
     private final RabbitTemplate rabbitTemplate;
 
     public RabbitMQController(RabbitTemplate rabbitTemplate){
@@ -18,11 +26,9 @@ public class RabbitMQController {
     }
 
     @PostMapping(value = "/message")
-    public ResponseEntity<HttpStatus> postMessage(@RequestParam("exchange") String exchange,
-                                                  @RequestParam("routingKey") String routingKey, @RequestBody Object message) {
-
-        log.info("Sending message to exchange {} with routingKey {}", exchange, routingKey);
-        rabbitTemplate.convertAndSend(exchange, routingKey, message);
+    public ResponseEntity<HttpStatus> postMessage(@RequestBody Message message) {
+        log.info("Sending message to exchange {} with routingKey {}", exchange, queue);
+        rabbitTemplate.convertAndSend(exchange, queue, message);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
