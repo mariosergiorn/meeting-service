@@ -38,7 +38,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public Optional<Usuario> getUserById(Long id) {
-        return userRepository.findById(String.valueOf(id));
+        return userRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
@@ -48,7 +48,7 @@ public class UsuarioService {
 
     @Transactional
     public Usuario updateUser(Long userId, Usuario newUser) {
-        Optional<Usuario> existingUserOptional = userRepository.findById(String.valueOf(userId));
+        Optional<Usuario> existingUserOptional = userRepository.findById(userId);
         if (existingUserOptional.isPresent()) {
             Usuario existingUser = existingUserOptional.get();
             BeanUtils.copyProperties(newUser, existingUser);
@@ -60,7 +60,7 @@ public class UsuarioService {
 
     @Transactional
     public boolean deleteUser(Long userId) {
-        Optional<Usuario> userOptional = userRepository.findById(String.valueOf(userId));
+        Optional<Usuario> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             userRepository.delete(userOptional.get());
             return true;

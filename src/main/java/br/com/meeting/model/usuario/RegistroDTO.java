@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class RegistroDTO {
 
-    private String login;
-
     private String password;
+
+    private String login;
 }

@@ -7,17 +7,17 @@ import br.com.meeting.model.usuario.RegistroDTO;
 import br.com.meeting.model.usuario.Usuario;
 import br.com.meeting.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("autorizacao")
 public class AutorizacaoController {
 
     @Autowired
@@ -26,6 +26,7 @@ public class AutorizacaoController {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private TokenService tokenService;
+
     @PostMapping("/logar")
     public ResponseEntity login(@RequestBody AutenticacaoDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.getLogin(), data.getPassword());
