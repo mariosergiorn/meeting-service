@@ -4,7 +4,7 @@ import br.com.meeting.config.KeyManager;
 import br.com.meeting.dto.ReuniaoDto;
 import br.com.meeting.model.Message;
 import br.com.meeting.model.Reuniao;
-import br.com.meeting.model.Usuario;
+import br.com.meeting.model.usuario.Usuario;
 import br.com.meeting.service.ReuniaoService;
 import br.com.meeting.utils.Constantes;
 import lombok.RequiredArgsConstructor;

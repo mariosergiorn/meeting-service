@@ -1,5 +1,6 @@
 package br.com.meeting.model;
 
+import br.com.meeting.model.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

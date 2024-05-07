@@ -1,7 +1,7 @@
 package br.com.meeting.controller;
 
 import br.com.meeting.dto.UsuarioDto;
-import br.com.meeting.model.Usuario;
+import br.com.meeting.model.usuario.Usuario;
 import br.com.meeting.service.UsuarioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
