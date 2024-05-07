@@ -8,7 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,26 +19,26 @@ public class Usuario implements UserDetails {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
     private Long id;
 
-    @Column(name = "name", length = 60, nullable = false)
+    @Column(name = "name", length = 60)
     private String name;
 
-    @Column(name = "email", length = 60, unique = true, nullable = false)
+    @Column(name = "email", length = 60)
     private String email;
 
-    @Column(name = "phone", length = 15, nullable = false)
+    @Column(name = "phone", length = 15)
     private String phone;
 
-    @Column(name = "password", length = 10, nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "LOGIN", length = 16, nullable = false)
+    @Column(name = "LOGIN", length = 16)
     private String login;
 
-    @Column(name = "ROLE", nullable = false)
+    @Column(name = "ROLE")
     private UsuarioRole role;
 
     public Usuario(String login, String password){
