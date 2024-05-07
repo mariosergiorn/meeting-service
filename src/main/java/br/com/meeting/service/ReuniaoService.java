@@ -3,7 +3,7 @@ package br.com.meeting.service;
 import br.com.meeting.dto.ReuniaoDto;
 import br.com.meeting.dto.UsuarioDto;
 import br.com.meeting.model.Reuniao;
-import br.com.meeting.model.Usuario;
+import br.com.meeting.model.usuario.Usuario;
 import br.com.meeting.model.UsuarioReuniao;
 import br.com.meeting.repository.ReuniaoRepository;
 import lombok.RequiredArgsConstructor;
