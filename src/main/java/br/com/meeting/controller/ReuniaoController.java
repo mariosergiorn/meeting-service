@@ -1,11 +1,14 @@
 package br.com.meeting.controller;
 
+import br.com.meeting.config.KeyManager;
 import br.com.meeting.dto.ReuniaoDto;
 import br.com.meeting.model.Message;
 import br.com.meeting.model.Reuniao;
 import br.com.meeting.model.Usuario;
 import br.com.meeting.service.ReuniaoService;
+import br.com.meeting.utils.Constantes;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +19,27 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/api/meetings")
 @RequiredArgsConstructor
+@Slf4j
 public class ReuniaoController {
 
     private final ReuniaoService service;
 
     private final RabbitMQController rabbit;
 
-    private final String CREATED = "CREATED";
-    private final String UPDATED = "UPDATED";
+    private final KeyManager keyManager;
+
+    @PostMapping("/teste")
+    public ResponseEntity<Void> teste() {
+        byte[] crypto = keyManager.encrypt("Mensagem");
+        rabbit.postStringMessage(crypto.toString());
+        log.info("Mensagem Cryptografada {}", crypto.toString());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<ReuniaoDto> createMeeting(@RequestBody ReuniaoDto reuniaoDto) {
         ReuniaoDto createdMeeting = service.createMeeting(reuniaoDto);
-        rabbit.postMessage(buildMessage(createdMeeting, CREATED));
+        rabbit.postMessage(buildMessage(createdMeeting, Constantes.CREATED));
         return new ResponseEntity<>(createdMeeting, HttpStatus.CREATED);
     }
 
@@ -63,7 +74,7 @@ public class ReuniaoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Reuniao>> getAllUsers() {
+    public ResponseEntity<List<Reuniao>> getAllMeetings() {
         List<Reuniao> meetings = service.getAllMeetings();
         if (meetings.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -75,7 +86,7 @@ public class ReuniaoController {
     public ResponseEntity<ReuniaoDto> updateMeeting(@PathVariable Long meetingId, @RequestBody ReuniaoDto meeting) {
         ReuniaoDto updatedMeeting = service.updateMeeting(meetingId, meeting);
         if (Objects.nonNull(updatedMeeting)) {
-            rabbit.postMessage(buildMessage(updatedMeeting, UPDATED));
+            rabbit.postMessage(buildMessage(updatedMeeting, Constantes.UPDATED));
             return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
