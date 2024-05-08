@@ -25,7 +25,7 @@ public class ReuniaoController {
     private final String CREATED = "CREATED";
     private final String UPDATED = "UPDATED";
 
-    @PostMapping
+    @PostMapping("/post")
     public ResponseEntity<ReuniaoDto> createMeeting(@RequestBody ReuniaoDto reuniaoDto) {
         ReuniaoDto createdMeeting = service.createMeeting(reuniaoDto);
         rabbit.postMessage(buildMessage(createdMeeting, CREATED));
@@ -62,7 +62,7 @@ public class ReuniaoController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<Reuniao>> getAllUsers() {
         List<Reuniao> meetings = service.getAllMeetings();
         if (meetings.isEmpty()) {
@@ -71,7 +71,7 @@ public class ReuniaoController {
         return new ResponseEntity<>(meetings, HttpStatus.OK);
     }
 
-    @PutMapping("/{meetingId}")
+    @PutMapping("/put/{meetingId}")
     public ResponseEntity<ReuniaoDto> updateMeeting(@PathVariable Long meetingId, @RequestBody ReuniaoDto meeting) {
         ReuniaoDto updatedMeeting = service.updateMeeting(meetingId, meeting);
         if (Objects.nonNull(updatedMeeting)) {

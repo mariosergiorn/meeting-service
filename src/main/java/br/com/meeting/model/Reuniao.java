@@ -1,5 +1,6 @@
 package br.com.meeting.model;
 
+import br.com.meeting.model.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +31,12 @@ public class Reuniao {
     @Column(name = "description", length = 50, nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "meeting")
-    private List<UsuarioReuniao> participants;
+    @ManyToMany
+    @JoinTable(
+            name = "TB_USUARIO_REUNIAO",
+            joinColumns = @JoinColumn(name = "id_meeting"),
+            inverseJoinColumns = @JoinColumn(name = "id_user")
+    )
+    private List<Usuario> participantes;
 
 }

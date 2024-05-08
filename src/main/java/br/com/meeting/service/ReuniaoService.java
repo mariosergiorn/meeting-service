@@ -56,7 +56,6 @@ public class ReuniaoService {
         List<UsuarioReuniao> usuarioReuniao = usuarioReuniaoService.getMeetingsByUserId(idUser);
         List<Reuniao> meetings = new ArrayList<>();
         for (UsuarioReuniao usuario : usuarioReuniao) {
-            usuario.getMeeting().setParticipants(null);
             meetings.add(usuario.getMeeting());
         }
         return meetings;
