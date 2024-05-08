@@ -23,7 +23,7 @@ public class Usuario implements UserDetails {
     @Column(name = "id_user")
     private Long id;
 
-    @Column(name = "name", length = 60)
+    @Column(name = "name", length = 60, unique = true)
     private String name;
 
     @Column(name = "email", length = 60)
