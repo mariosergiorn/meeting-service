@@ -28,7 +28,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "autorizacao/logar").permitAll()
                         .requestMatchers(HttpMethod.POST, "autorizacao/registrar").permitAll()
-
+                        .requestMatchers(HttpMethod.GET, "api/users").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "api/users/alterar").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/meetings/meetings/").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
