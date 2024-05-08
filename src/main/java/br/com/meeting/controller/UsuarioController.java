@@ -1,9 +1,12 @@
 package br.com.meeting.controller;
 
 import br.com.meeting.dto.UsuarioDto;
+import br.com.meeting.model.usuario.AlterarUsuarioDTO;
+import br.com.meeting.model.usuario.RegistroDTO;
 import br.com.meeting.model.usuario.Usuario;
 import br.com.meeting.service.UsuarioService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,9 +51,11 @@ public class UsuarioController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<Usuario> updateUser(@PathVariable Long userId, @RequestBody Usuario user) {
-        Usuario updatedUser = service.updateUser(userId, user);
+    @PutMapping("/alterar")
+    public ResponseEntity<Usuario> updateUser(@RequestBody AlterarUsuarioDTO user) {
+        Usuario usu = new Usuario();
+        BeanUtils.copyProperties(user, usu);
+        Usuario updatedUser = service.updateUser(user.getId(), usu);
         if (Objects.nonNull(updatedUser)) {
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } else {
