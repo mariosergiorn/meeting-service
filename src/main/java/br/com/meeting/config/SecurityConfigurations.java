@@ -31,6 +31,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "api/users").permitAll()
                         .requestMatchers(HttpMethod.PUT, "api/users/alterar").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/meetings/getAll").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/meetings/participants/{meetingId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/meetings/post").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/meetings/put/").permitAll()
                         .anyRequest().authenticated()
