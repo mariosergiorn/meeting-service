@@ -7,6 +7,8 @@ import br.com.meeting.model.Reuniao;
 import br.com.meeting.model.usuario.Usuario;
 import br.com.meeting.service.ReuniaoService;
 import br.com.meeting.utils.Constantes;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,18 +30,21 @@ public class ReuniaoController {
 
     private final KeyManager keyManager;
 
+    private final ObjectMapper objectMapper;
+
     @PostMapping("/teste")
-    public ResponseEntity<Void> teste() {
-        byte[] crypto = keyManager.encrypt("Mensagem");
-        rabbit.postStringMessage(crypto.toString());
-        log.info("Mensagem Cryptografada {}", crypto.toString());
+    public ResponseEntity<Void> teste() throws Exception {
+        String encrypt = keyManager.signAndEncrypt(objectMapper.writeValueAsString(Message.builder().status("CREATED").build()));
+        rabbit.postMessage(encrypt);
+        log.info("Mensagem Cryptografada {}", encrypt);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/post")
-    public ResponseEntity<ReuniaoDto> createMeeting(@RequestBody ReuniaoDto reuniaoDto) {
+    public ResponseEntity<ReuniaoDto> createMeeting(@RequestBody ReuniaoDto reuniaoDto) throws Exception {
         ReuniaoDto createdMeeting = service.createMeeting(reuniaoDto);
-        rabbit.postMessage(buildMessage(createdMeeting, Constantes.CREATED));
+        String encryptMessage = keyManager.signAndEncrypt(buildMessageJson(createdMeeting, Constantes.CREATED));
+        rabbit.postMessage(encryptMessage);
         return new ResponseEntity<>(createdMeeting, HttpStatus.CREATED);
     }
 
@@ -83,10 +88,11 @@ public class ReuniaoController {
     }
 
     @PutMapping("/put/{meetingId}")
-    public ResponseEntity<ReuniaoDto> updateMeeting(@PathVariable Long meetingId, @RequestBody ReuniaoDto meeting) {
+    public ResponseEntity<ReuniaoDto> updateMeeting(@PathVariable Long meetingId, @RequestBody ReuniaoDto meeting) throws Exception {
         ReuniaoDto updatedMeeting = service.updateMeeting(meetingId, meeting);
         if (Objects.nonNull(updatedMeeting)) {
-            rabbit.postMessage(buildMessage(updatedMeeting, Constantes.UPDATED));
+            String encryptMessage = keyManager.signAndEncrypt(buildMessageJson(updatedMeeting, Constantes.UPDATED));
+            rabbit.postMessage(encryptMessage);
             return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -103,8 +109,9 @@ public class ReuniaoController {
         }
     }
 
-    private Message buildMessage(ReuniaoDto reuniaoDto, String status) {
-        return Message.builder().idMeeting(reuniaoDto.getId()).status(status).build();
+    private String buildMessageJson(ReuniaoDto reuniaoDto, String status) throws JsonProcessingException {
+        Message object = Message.builder().idMeeting(reuniaoDto.getId()).status(status).build();
+        return objectMapper.writeValueAsString(object);
     }
 
 }

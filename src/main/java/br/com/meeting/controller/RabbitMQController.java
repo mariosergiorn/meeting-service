@@ -26,15 +26,7 @@ public class RabbitMQController {
     }
 
     @PostMapping(value = "/message")
-    public ResponseEntity<HttpStatus> postMessage(@RequestBody Message message) {
-        log.info("Sending message to exchange {} with routingKey {}", exchange, queue);
-        rabbitTemplate.convertAndSend(exchange, queue, message);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/string")
-    public ResponseEntity<HttpStatus> postStringMessage(@RequestBody String message) {
+    public ResponseEntity<HttpStatus> postMessage(@RequestBody String message) {
         log.info("Sending message to exchange {} with routingKey {}", exchange, queue);
         rabbitTemplate.convertAndSend(exchange, queue, message);
 

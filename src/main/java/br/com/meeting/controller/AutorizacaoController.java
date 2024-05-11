@@ -7,6 +7,7 @@ import br.com.meeting.model.usuario.RegistroDTO;
 import br.com.meeting.model.usuario.Usuario;
 import br.com.meeting.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,8 +43,10 @@ public class AutorizacaoController {
     public ResponseEntity<HttpStatus> register(@RequestBody RegistroDTO data){
         if(this.usuarioRepository.findByLogin(data.getLogin()) != null) return ResponseEntity.badRequest().build();
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
-        Usuario newUser = new Usuario(data.getLogin(), encryptedPassword);
+        data.setPassword(new BCryptPasswordEncoder().encode(data.getPassword()));
+        Usuario newUser = new Usuario();
+
+        BeanUtils.copyProperties(data, newUser);
 
         this.usuarioRepository.save(newUser);
 

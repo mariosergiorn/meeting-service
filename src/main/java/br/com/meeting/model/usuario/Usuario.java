@@ -23,10 +23,10 @@ public class Usuario implements UserDetails {
     @Column(name = "id_user")
     private Long id;
 
-    @Column(name = "name", length = 60, unique = true)
+    @Column(name = "name", length = 60)
     private String name;
 
-    @Column(name = "email", length = 60)
+    @Column(name = "email", length = 60, unique = true)
     private String email;
 
     @Column(name = "phone", length = 15)
@@ -40,12 +40,6 @@ public class Usuario implements UserDetails {
 
     @Column(name = "ROLE")
     private UsuarioRole role;
-
-    public Usuario(String login, String password){
-        this.login = login;
-        this.password = password;
-        this.role = UsuarioRole.USER;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

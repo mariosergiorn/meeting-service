@@ -1,38 +1,37 @@
 package br.com.meeting.config;
 
-import org.springframework.stereotype.Component;
+import br.com.meeting.utils.Constantes;
+import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.Cipher;
-import java.io.*;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.security.*;
+import java.util.Base64;
 
-@Component
+@Configuration
 public class KeyManager {
 
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
+    KeyPair keyPair;
+    PrivateKey privateKey;
+    PublicKey publicKey;
 
-    public static final String ALGORITHM = "RSA";
+    public static KeyPair generateKeyPair() throws Exception {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
+    }
 
-    public static final String PATH_CHAVE_PRIVADA = "C:/Keys/private.key";
-
-    public static final String PATH_CHAVE_PUBLICA = "C:/Keys/public.key";
-
-    public KeyManager() {
-
+    public KeyManager() throws Exception {
         try {
-            final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
-            keyGen.initialize(2048);
-            final KeyPair key = keyGen.generateKeyPair();
 
-            this.privateKey = key.getPrivate();
-            this.publicKey = key.getPublic();
+            keyPair = generateKeyPair();
+            privateKey = keyPair.getPrivate();
+            publicKey = keyPair.getPublic();
 
-            File chavePrivadaFile = new File(PATH_CHAVE_PRIVADA);
-            File chavePublicaFile = new File(PATH_CHAVE_PUBLICA);
+            File chavePrivadaFile = new File(Constantes.PATH_CHAVE_PRIVADA);
+            File chavePublicaFile = new File(Constantes.PATH_CHAVE_PUBLICA);
 
             // Cria os arquivos para armazenar a chave Privada e a chave Publica
             if (chavePrivadaFile.getParentFile() != null) {
@@ -45,12 +44,12 @@ public class KeyManager {
 
             try (ObjectOutputStream keyPublicOS = new ObjectOutputStream(
                     new FileOutputStream(chavePublicaFile))) {
-                keyPublicOS.writeObject(key.getPublic());
+                keyPublicOS.writeObject(keyPair.getPublic());
             }
 
             try (ObjectOutputStream keyPrivateOS = new ObjectOutputStream(
                     new FileOutputStream(chavePrivadaFile))) {
-                keyPrivateOS.writeObject(key.getPrivate());
+                keyPrivateOS.writeObject(keyPair.getPrivate());
             }
 
         } catch (Exception e) {
@@ -58,18 +57,24 @@ public class KeyManager {
         }
     }
 
-    public byte[] encrypt(String data) {
-        byte[] cipherText = null;
+    public String signAndEncrypt(String message) throws Exception {
+        // Assinar mensagem
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initSign(privateKey);
+        signature.update(message.getBytes());
+        byte[] signedMessage = signature.sign();
 
-        try {
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            cipherText = cipher.doFinal(data.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Criptografar mensagem
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        byte[] encryptedMessage = cipher.doFinal(message.getBytes());
 
-        return cipherText;
+        // Concatenar assinatura e mensagem criptografada
+        byte[] signedAndEncryptedMessage = new byte[signedMessage.length + encryptedMessage.length];
+        System.arraycopy(signedMessage, 0, signedAndEncryptedMessage, 0, signedMessage.length);
+        System.arraycopy(encryptedMessage, 0, signedAndEncryptedMessage, signedMessage.length, encryptedMessage.length);
+
+        return Base64.getEncoder().encodeToString(signedAndEncryptedMessage);
     }
 
 }
