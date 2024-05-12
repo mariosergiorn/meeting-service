@@ -26,17 +26,15 @@ public class ReuniaoController {
 
     private final ReuniaoService service;
 
-    private final RabbitMQController rabbit;
-
     private final KeyManager keyManager;
 
-    private final ObjectMapper objectMapper;
+    private final SSEController sseController;
 
     @PostMapping("/teste")
     public ResponseEntity<Void> teste() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
         String encrypt = keyManager.signAndEncrypt(objectMapper.writeValueAsString(Message.builder().status("CREATED").build()));
-        rabbit.postMessage(encrypt);
-        log.info("Mensagem Cryptografada {}", encrypt);
+        sseController.dispatchEventToClients(encrypt);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -44,7 +42,7 @@ public class ReuniaoController {
     public ResponseEntity<ReuniaoDto> createMeeting(@RequestBody ReuniaoDto reuniaoDto) throws Exception {
         ReuniaoDto createdMeeting = service.createMeeting(reuniaoDto);
         String encryptMessage = keyManager.signAndEncrypt(buildMessageJson(createdMeeting, Constantes.CREATED));
-        rabbit.postMessage(encryptMessage);
+        sseController.dispatchEventToClients(encryptMessage);
         return new ResponseEntity<>(createdMeeting, HttpStatus.CREATED);
     }
 
@@ -92,7 +90,7 @@ public class ReuniaoController {
         ReuniaoDto updatedMeeting = service.updateMeeting(meetingId, meeting);
         if (Objects.nonNull(updatedMeeting)) {
             String encryptMessage = keyManager.signAndEncrypt(buildMessageJson(updatedMeeting, Constantes.UPDATED));
-            rabbit.postMessage(encryptMessage);
+            sseController.dispatchEventToClients(encryptMessage);
             return new ResponseEntity<>(updatedMeeting, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -110,6 +108,7 @@ public class ReuniaoController {
     }
 
     private String buildMessageJson(ReuniaoDto reuniaoDto, String status) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
         Message object = Message.builder().idMeeting(reuniaoDto.getId()).status(status).build();
         return objectMapper.writeValueAsString(object);
     }

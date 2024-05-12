@@ -35,6 +35,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "api/meetings/participants/{meetingId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/meetings/teste").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/meetings/post").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/sse/dispatchEvent").permitAll()
+                        .requestMatchers("/api/sse/subscribe").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/meetings/put/{meetingId}").permitAll()
                         .anyRequest().authenticated()
                 )

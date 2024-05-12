@@ -98,10 +98,6 @@ public class ReuniaoService {
         }
     }
 
-    private UsuarioDto convertToDTO(Usuario usuario) {
-        return modelMapper.map(usuario, UsuarioDto.class);
-    }
-
     private Usuario convertToEntity(UsuarioDto usuarioDto) {
         return modelMapper.map(usuarioDto, Usuario.class);
     }
