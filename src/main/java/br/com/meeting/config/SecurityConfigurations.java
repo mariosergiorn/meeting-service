@@ -33,6 +33,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "api/users/alterar").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/meetings/getAll").permitAll()
                         .requestMatchers(HttpMethod.GET, "api/meetings/participants/{meetingId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "api/meetings/delete/{meetingId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/meetings/teste").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/meetings/post").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/sse/dispatchEvent").permitAll()

@@ -97,7 +97,7 @@ public class ReuniaoController {
         }
     }
 
-    @DeleteMapping("/{meetingId}")
+    @DeleteMapping("delete/{meetingId}")
     public ResponseEntity<Void> deleteMeeting(@PathVariable Long meetingId) {
         boolean deleted = service.deleteMeeting(meetingId);
         if (deleted) {
