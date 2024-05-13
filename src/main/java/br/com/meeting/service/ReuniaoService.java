@@ -78,10 +78,8 @@ public class ReuniaoService {
 
     @Transactional
     public ReuniaoDto updateMeeting(Long meetingId, ReuniaoDto updatedMeetingDTO) {
-        Reuniao existingMeeting = repository.findById(meetingId).orElse(null);
-        if (Objects.nonNull(existingMeeting)) {
-            BeanUtils.copyProperties(updatedMeetingDTO, existingMeeting);
-            Reuniao updatedMeeting = repository.save(existingMeeting);
+        if (Objects.nonNull(repository.findById(meetingId).orElse(null))) {
+            Reuniao updatedMeeting = repository.save(convertToEntity(updatedMeetingDTO));
             return convertToDTO(updatedMeeting);
         } else {
             return null;

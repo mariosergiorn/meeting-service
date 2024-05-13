@@ -37,6 +37,6 @@ public class Reuniao {
             joinColumns = @JoinColumn(name = "id_meeting"),
             inverseJoinColumns = @JoinColumn(name = "id_user")
     )
-    private List<Usuario> participantes;
+    private List<Usuario> participants;
 
 }
