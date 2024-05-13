@@ -35,10 +35,10 @@ public class Usuario implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "LOGIN", length = 16)
+    @Column(name = "login", length = 16)
     private String login;
 
-    @Column(name = "ROLE")
+    @Column(name = "role")
     private UsuarioRole role;
 
     @Override

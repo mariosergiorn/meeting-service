@@ -29,16 +29,7 @@ public class ReuniaoService {
     @Transactional
     public ReuniaoDto createMeeting(ReuniaoDto reuniaoDto) {
         Reuniao reuniao = convertToEntity(reuniaoDto);
-        Reuniao reuniaoRetorno = repository.save(reuniao);
-
-        for (UsuarioDto usuario : reuniaoDto.getParticipants()) {
-            UsuarioReuniao usuarioReuniao = new UsuarioReuniao();
-            usuarioReuniao.setMeeting(reuniaoRetorno);
-            usuarioReuniao.setUser(convertToEntity(usuario));
-            usuarioReuniaoService.create(usuarioReuniao);
-        }
-
-        return convertToDTO(reuniao);
+        return convertToDTO(repository.save(reuniao));
     }
 
     @Transactional(readOnly = true)
@@ -94,10 +85,6 @@ public class ReuniaoService {
         } else {
             return false;
         }
-    }
-
-    private Usuario convertToEntity(UsuarioDto usuarioDto) {
-        return modelMapper.map(usuarioDto, Usuario.class);
     }
 
     private ReuniaoDto convertToDTO(Reuniao reuniao) {

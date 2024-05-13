@@ -32,11 +32,8 @@ public class Reuniao {
     private String description;
 
     @ManyToMany
-    @JoinTable(
-            name = "TB_USUARIO_REUNIAO",
-            joinColumns = @JoinColumn(name = "id_meeting"),
-            inverseJoinColumns = @JoinColumn(name = "id_user")
-    )
+    @JoinTable(name = "TB_USUARIO_REUNIAO", joinColumns = @JoinColumn(name = "id_meeting"),
+            inverseJoinColumns = @JoinColumn(name = "id_user"))
     private List<Usuario> participants;
 
 }
