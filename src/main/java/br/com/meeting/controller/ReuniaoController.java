@@ -30,14 +30,6 @@ public class ReuniaoController {
 
     private final SSEController sseController;
 
-    @PostMapping("/teste")
-    public ResponseEntity<Void> teste() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String encrypt = keyManager.signAndEncrypt(objectMapper.writeValueAsString(Message.builder().status("CREATED").build()));
-        sseController.dispatchEventToClients(encrypt);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @PostMapping("/post")
     public ResponseEntity<ReuniaoDto> createMeeting(@RequestBody ReuniaoDto reuniaoDto) throws Exception {
         ReuniaoDto createdMeeting = service.createMeeting(reuniaoDto);
